@@ -22,25 +22,10 @@ data = api.search.search(
 )
 
 
-G= nx.Graph()
+G = PornGraph()
 
 for vid in data.videos:
     if vid.pornstars:
-        for star1, star2 in itertools.combinations(vid.pornstars,2):
-
-            if not star1.pornstar_name in G.nodes:
-                G.add_node(star1.pornstar_name)
-            if not star2.pornstar_name in G.nodes:
-                G.add_node(star2.pornstar_name)
-            
-            G.add_edge(star1.pornstar_name,star2.pornstar_name, wage=str_to_seconds(vid.duration), name=vid.title)
-        # print(vid.title)
-        # print(vid.pornstars)
-        # print(vid.video_id)
-        # print(vid.duration)
-        # print(vid.publish_date)
-
-nx.write_graphml(G, 'graph.graphml')
-nt = Network()
-nt.from_nx(G)
-nt.show('nx.html')
+        G.add_vid(vid)
+        
+G.show('nx.html')
