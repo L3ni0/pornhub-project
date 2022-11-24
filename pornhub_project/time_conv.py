@@ -8,5 +8,4 @@ def str_to_seconds(duration: str) -> int:
 
     return int_time
 
-
     

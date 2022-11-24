@@ -25,7 +25,7 @@ class PornGraph:
             if not star2.pornstar_name in self.G.nodes:
                 self.G.add_node(star2.pornstar_name)
             
-            self.G.add_edge(star1.pornstar_name,star2.pornstar_name, value=str_to_seconds(vid.duration), title=f'{vid.title} time:{vid.duration}', date=vid.publish_date)
+            self.G.add_edge(star1.pornstar_name,star2.pornstar_name, value=str_to_seconds(vid.duration), title=f'{vid.title} time:{vid.duration}', date=str(vid.publish_date))
 
     def show(self,name='graph'):
         self.G.show(f'{name}.html')
