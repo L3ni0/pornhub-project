@@ -3,7 +3,7 @@ import networkx as nx
 import itertools
 import pandas as pd
 import matplotlib.pyplot as plt
-from time_conv import str_to_seconds
+from time_conv import *
 from graph import PornGraph
 from pyvis.network import Network
 
@@ -11,7 +11,7 @@ api = PornhubApi()
 
 
 df = pd.DataFrame(columns=['pornstar_1','pornstar_2','duration','titles'])
-for i in range(1,400):
+for i in range(1,10000):
     data = api.search.search(
         ordering="mostviewed",
         period="all-time",
@@ -30,6 +30,7 @@ for i in range(1,400):
 df_names = df.groupby(['pornstar_1','pornstar_2'])['titles'].apply('\n'.join).reset_index()
 df_durations = df.groupby(['pornstar_1','pornstar_2'])['duration'].apply(sum)
 df = pd.merge(df_names,df_durations, on =['pornstar_1','pornstar_2'])
+df['duration'] = df['duration'].apply(sec_to_time)
 df.to_csv('merged.csv')
 print(df)
 
