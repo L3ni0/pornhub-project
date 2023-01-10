@@ -1,10 +1,11 @@
-a = 5
-b = 8 
-c = 3
-d = 5
-a += b
-a += c
-a += d
-print(a)
+lista = ['fdadsf','dfsa','ss','s','daadaf','s' ]
+slownik = {}
+for el in lista:
+    if not el in slownik:
+        slownik[len(el)] = 1
+    else:
+        slownik[len(el)] += 1
 
 
+for key in slownik:
+    print(key)

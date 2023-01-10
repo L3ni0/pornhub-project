@@ -1,35 +1,48 @@
 from pornhub_api import PornhubApi
-import sqlalchemy as db
-import pandas as pd
 import networkx as nx
 import itertools
+import pandas as pd
 import matplotlib.pyplot as plt
 from time_conv import str_to_seconds
 from graph import PornGraph
 from pyvis.network import Network
 
-# engine = db.create_engine('postgresql://postgres:dominik123@localhost/postgres')
-# conn = engine.connect()
 api = PornhubApi()
 
-# conn.execute('CREATE TABLE IF NOT EXISTS data (vid_id text PRIMARY KEY, pornstars text, title text)')
-# print(pd.read_sql("SELECT * FROM information_schema.columns WHERE table_name = 'data'", engine))
-G = PornGraph()
-for i in range(1,20):
+
+df = pd.DataFrame(columns=['pornstar_1','pornstar_2','duration','titles'])
+for i in range(1,400):
     data = api.search.search(
         ordering="mostviewed",
         period="all-time",
         page=i
     )
+
+
+    
     print(f'download {i}')
     for vid in data.videos:
         if vid.pornstars:
-            G.add_vid(vid)
+            for star1, star2 in itertools.combinations(vid.pornstars,2):
+                lists = [*sorted([star1.pornstar_name, star2.pornstar_name]), str_to_seconds(vid.duration),f'{vid.title}']
+                df.loc[len(df)] = lists
+
+df_names = df.groupby(['pornstar_1','pornstar_2'])['titles'].apply('\n'.join).reset_index()
+df_durations = df.groupby(['pornstar_1','pornstar_2'])['duration'].apply(sum)
+df = pd.merge(df_names,df_durations, on =['pornstar_1','pornstar_2'])
+df.to_csv('merged.csv')
+print(df)
+
+
+
+# G = PornGraph()
+# for i in range(1,10):
+#     
+#     print(f'download {i}')
+#     for vid in data.videos:
+#         if vid.pornstars:
+#             G.add_vid(vid)
         
-    print(i)
+#     print(i)
 
-
-
-
-
-G.show('nx.html')
+# G.show('test')
