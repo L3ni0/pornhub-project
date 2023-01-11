@@ -9,5 +9,10 @@ from pyvis.network import Network
 
 grap = PornGraph()
 grap.from_csv('merged.csv')
-grap.show('fromcvs')
+
+list_qliques = grap.biggest_clique()
+for i in list_qliques:
+    print(i)
+
+# grap.show('finally')
 

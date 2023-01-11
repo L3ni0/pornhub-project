@@ -31,24 +31,50 @@ class PornGraph:
 
     def from_csv(self,dir):
         df = pd.read_csv(dir)
+        df_stars = pd.read_csv('stars.csv', index_col=0)
+        names = df_stars.index.values.tolist() 
         for i,data in df.iterrows():
             if not data.pornstar_1 in self.N.nodes:
-                self.N.add_node(data.pornstar_1)
+
+                if data.pornstar_1.lower() in names:
+                    url, moveis = df_stars.loc[data.pornstar_1.lower()]
+                    self.N.add_node(data.pornstar_1, shape='circularImage', image=url)
+                else:
+                    self.N.add_node(data.pornstar_1)
+
             if not data.pornstar_2 in self.N.nodes:
-                self.N.add_node(data.pornstar_2)
+                if data.pornstar_2.lower() in names:
+                    url, moveis = df_stars.loc[data.pornstar_2.lower()]
+                    self.N.add_node(data.pornstar_2, shape='circularImage', image=url)
+                else:
+                    self.N.add_node(data.pornstar_2)
             self.N.add_edge(data.pornstar_1, data.pornstar_2, value=time_to_sec(data.duration), title=f'{data.titles, data.duration}')
         
         # deleting non connected nodes
         nodes = max(nx.connected_components(self.N), key=len)
         self.N = nx.subgraph(self.N, nodes)  
 
+        self.diameter = nx.diameter(self.N)
+        self.density = nx.density(self.N)
+
+
+    def biggest_clique(self):
+
+        def check(big_list, sublist):
+            for test in big_list:
+                if sublist in test and test != sublist:
+                    return False
+            
+            return True
+
+        cliques = [*nx.find_cliques(self.N)]
+
+        return [x for x in cliques if check(cliques,x)]
+        
+
 
     def show(self,name='graph'):
-        print(nx.diameter(self.N))
-        print(nx.density(self.N))
-        for i in nx.find_cliques(self.N):
-            if len(i) > 2:
-                print(i)
+
         self.G = Network(height="1450px", width="100%", bgcolor="#222222", font_color="white")
         self.G.from_nx(self.N)
         self.G.set_edge_smooth('straightCross')
