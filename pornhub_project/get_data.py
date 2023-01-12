@@ -15,6 +15,7 @@ if __name__ == '__main__':
     api = PornhubApi()
 
 
+    # downoad videos
     df = pd.DataFrame(columns=['pornstar_1','pornstar_2','duration','titles'])
     for i in range(1,10000):
         data = api.search.search(
@@ -41,6 +42,7 @@ if __name__ == '__main__':
 
     all_stars =  api.stars.all_detailed()
 
+    #download stars
 
     dictionary = {} # kochane api ma ciekawy format
     for one in list(all_stars): # nie dało się inaczej, po [0][0] itd wywala błąd
