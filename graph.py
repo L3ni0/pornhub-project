@@ -28,6 +28,7 @@ class PornGraph:
                 self.N.add_node(star2.pornstar_name)
             
             self.N.add_edge(star1.pornstar_name,star2.pornstar_name, value=str_to_seconds(vid.duration), title=f'{vid.title} time:{vid.duration}', date=str(vid.publish_date),physic=False)
+    
 
     def from_csv(self,dir):
         df = pd.read_csv(dir)
@@ -53,9 +54,13 @@ class PornGraph:
             else:
                 self.N.add_edge(data.pornstar_1, data.pornstar_1, value=time_to_sec(data.duration), title=f'{data.titles, data.duration}')
         # deleting non connected nodes
-        nodes = max(nx.connected_components(self.N), key=len)
-        self.N = nx.subgraph(self.N, nodes)  
+        before = len(self.N.nodes)
 
+        print('liczba osób ogólnie', before)
+        nodes = max(nx.connected_components(self.N), key=len)
+        self.N = nx.subgraph(self.N, nodes) 
+
+        print('liczba osób w obliczeniach', len(self.N.nodes))
         self.diameter = nx.diameter(self.N)
         self.density = nx.density(self.N)
 
@@ -84,7 +89,3 @@ class PornGraph:
         self.G.show_buttons()
         self.G.show(f'{name}.html')
 
-
-graph = PornGraph()
-graph.from_csv('converted.csv')
-graph.show('stest')
