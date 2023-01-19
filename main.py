@@ -8,11 +8,11 @@ from graph import PornGraph
 from pyvis.network import Network
 
 grap = PornGraph()
-grap.from_csv('merged.csv')
+grap.from_csv('converted.csv')
+print(grap.density)
+print(grap.diameter)
+print(grap.biggest_clique())
 
-list_qliques = grap.biggest_clique()
-for i in list_qliques:
-    print(i)
 
-# grap.show('finally')
+grap.show('finally')
 
